@@ -5,6 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Mi Sitio Web{% endblock %}</title>
+    <nav>
+        <ul>
+            <li>
+                <a href="{% url 'index' %}">Inicio </a>
+            </li>
+            <li>
+                {% if user.is_authenticated  %}
+                    <p>Bienvenido, {{ user.username }}!</p>
+                    <a href="{% url 'logout' %}">Cerrar sesión</a>
+                {% else %}
+                    <a href="{% url 'login_view' %}">Iniciar sesión</a>
+                    <a href="{% url 'Registro' %}">Registro</a>
+                {% endif %}
+            </li>
+            
+        </ul>
+    </nav>
 </head>
 <body>
     {% block content %}
