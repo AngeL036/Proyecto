@@ -13,7 +13,7 @@
             <li>
                 {% if user.is_authenticated  %}
                     <p>Bienvenido, {{ user.username }}!</p>
-                    <a href="{% url 'logout' %}">Cerrar sesión</a>
+                    <a href="{% url 'logout_view' %}">Cerrar sesión</a>
                 {% else %}
                     <a href="{% url 'login_view' %}">Iniciar sesión</a>
                     <a href="{% url 'Registro' %}">Registro</a>
