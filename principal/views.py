@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
-from .forms import RegistroForm,login
+from .forms import RegistroForm,login,PublicacionForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Publicacion
 # Create your views here.
 def index(request):
     return render(request,'index.html')
@@ -37,7 +38,7 @@ def login_view(request):
             user = authenticate(request,username=username, password=password)
             if user is not None:
                 login(request,user)
-                return redirect('index')
+                return redirect('pantalla')
         error = "Nombre de usuario o contraseña incorrectos."
         return render(request, 'login.html', {'form': form, 'error': error})
     return render(request, 'login.html', {"form": form}) 
@@ -45,3 +46,19 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def pantalla(request):
+    publicaciones = Publicacion.objects.all().order_by('-fecha_creacion')
+    return render(request,'pantalla.html',{'publicaciones':publicaciones})
+
+def crear_publicacion(request):
+    if request.method == 'POST':
+        form = PublicacionForm(request.POST)
+        if form.is_valid():
+            publicacion = form.save(commit=False)
+            publicacion.usuario = request.user
+            publicacion.save()
+            return redirect('pantalla')
+    else:
+        form = PublicacionForm()
+    return render(request, 'crear_publicacion.html',{'form':form})
