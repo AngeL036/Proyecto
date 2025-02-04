@@ -1,0 +1,13 @@
+{% extends "base.html" %} {%block title%} Aplicacion {%endblock%}
+{% load static %}              
+
+{% block content %}
+<h3>{{user.username}}</h3>
+{% for publicacion in publicaciones %}
+    <div>
+        <h3>{{ publicacion.usuario.username}}</h3>
+        <p>{{publicacion.texto}}</p>
+        <small>{{ publicacion.fecha_creacion}}</small>
+    </div>
+{% endfor %}
+{% endblock %}

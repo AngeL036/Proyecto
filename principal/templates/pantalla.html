@@ -2,6 +2,8 @@
 {% load static %}              
 
 {% block content %}
+<button > <a href="{% url 'crear_publicacion' %}">publicar</a></button>
+<button> <a href="{% url 'perfil' %}">Perfil</a></button>
 {% for publicacion in publicaciones %}
 <div>
     <h3>{{ publicacion.usuario.username }}</h3>

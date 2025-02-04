@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Publicacion
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 def index(request):
     return render(request,'index.html')
@@ -43,14 +44,17 @@ def login_view(request):
         return render(request, 'login.html', {'form': form, 'error': error})
     return render(request, 'login.html', {"form": form}) 
 
+
 def logout_view(request):
     logout(request)
     return redirect('index')
 
+@login_required
 def pantalla(request):
     publicaciones = Publicacion.objects.all().order_by('-fecha_creacion')
     return render(request,'pantalla.html',{'publicaciones':publicaciones})
 
+@login_required
 def crear_publicacion(request):
     if request.method == 'POST':
         form = PublicacionForm(request.POST)
@@ -62,3 +66,9 @@ def crear_publicacion(request):
     else:
         form = PublicacionForm()
     return render(request, 'crear_publicacion.html',{'form':form})
+
+@login_required
+def perfil(request):
+    user = request.user
+    Publicaciones = Publicacion.objects.filter(usuario=user).order_by('-fecha_creacion')
+    return render(request,'perfil.html',{'user':user,'publicaciones':Publicaciones})
