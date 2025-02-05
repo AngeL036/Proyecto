@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .forms import RegistroForm,login,PublicacionForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
@@ -12,11 +12,11 @@ def index(request):
 #def Registro(request):
  #   return render(request,'Formularios.html')
 def Registro(request):
-    
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
+            
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             if User.objects.filter(username=username).exists():
@@ -52,7 +52,12 @@ def logout_view(request):
 @login_required
 def pantalla(request):
     publicaciones = Publicacion.objects.all().order_by('-fecha_creacion')
-    return render(request,'pantalla.html',{'publicaciones':publicaciones})
+    
+    usernameP = request.user.username
+    return render(request,'pantalla.html',{
+        'publicaciones':publicaciones, 
+        'usernameP':usernameP
+        })
 
 @login_required
 def crear_publicacion(request):
@@ -68,7 +73,12 @@ def crear_publicacion(request):
     return render(request, 'crear_publicacion.html',{'form':form})
 
 @login_required
-def perfil(request):
-    user = request.user
+def perfil(request,username):
+    user = get_object_or_404(User, username=username)
     Publicaciones = Publicacion.objects.filter(usuario=user).order_by('-fecha_creacion')
-    return render(request,'perfil.html',{'user':user,'publicaciones':Publicaciones})
+    personas = User.objects.all().order_by('username')
+    return render(request,'perfil.html',{
+        'user':user,
+        'publicaciones':Publicaciones,
+        'personas':personas
+        })

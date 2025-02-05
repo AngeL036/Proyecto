@@ -3,11 +3,23 @@
 
 {% block content %}
 <h3>{{user.username}}</h3>
+<div>
+    <button type="button">Agregar Compañero</button>
+</div>  
+<div>
+    <ul>
+    {% for persona in personas  %}
+        <li><a href="{% url 'perfil' persona.username %}">{{ persona.username}}</a></li>
+    {% endfor %}
+    </ul>
+</div>
 {% for publicacion in publicaciones %}
     <div>
-        <h3>{{ publicacion.usuario.username}}</h3>
+        <h3><a href="{% url 'perfil' publicacion.usuario.username %}"></a>{{ publicacion.usuario.username}}</h3>
         <p>{{publicacion.texto}}</p>
         <small>{{ publicacion.fecha_creacion}}</small>
     </div>
+{% empty %}
+    <p>Este usuario no ha publicado nada aún.</p>
 {% endfor %}
 {% endblock %}
